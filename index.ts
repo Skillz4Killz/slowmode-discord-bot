@@ -49,21 +49,15 @@ client.on("message", (message) => {
     const canSendMessageDate = slowmode.time + lastMessageDate;
     if(canSendMessageDate > Date.now()){
         if(message.deletable) message.delete();
-        message.member.send(
-            config.messages.waitMP
+        
+        message.reply(
+            config.messages.wait
             .replace("{{time}}", moment.duration(canSendMessageDate-Date.now(), "milliseconds").humanize(true))
             .replace("{{user}}", message.author.toString())
             .replace("{{channel}}", message.channel.toString())
-        ).catch(() => {
-            message.reply(
-                config.messages.wait
-                .replace("{{time}}", moment.duration(canSendMessageDate-Date.now(), "milliseconds").humanize(true))
-                .replace("{{user}}", message.author.toString())
-                .replace("{{channel}}", message.channel.toString())
-            ).then((m) => {
-                m.delete({
-                    timeout: 2000
-                });
+        ).then((m) => {
+            m.delete({
+                timeout: 2000
             });
         });
     } else {
